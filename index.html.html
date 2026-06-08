@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fable Salon — Book Appointment</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0c0b;
+    --surface: #181412;
+    --card: #1e1a18;
+    --border: #2e2825;
+    --gold: #c9a96e;
+    --gold-light: #e2c898;
+    --white: #f0ece6;
+    --muted: #7a6f67;
+    --accent2: #8b6f4e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Jost', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 52px 24px 36px;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,169,110,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo-ring {
+    width: 72px; height: 72px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    position: relative;
+  }
+
+  .logo-ring::after {
+    content: '✦';
+    position: absolute;
+    top: -8px; right: -6px;
+    font-size: 14px;
+    color: var(--gold);
+  }
+
+  .logo-initials {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .salon-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: 6px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .salon-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+  }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 32px;
+    margin-bottom: 8px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .divider span {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .phone-bar {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    padding: 12px 0 0;
+  }
+
+  .phone-bar a {
+    color: var(--gold-light);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    padding: 0 20px;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 8px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Jost', sans-serif;
+  }
+
+  .tab.active {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* ── SERVICE SECTIONS ── */
+  .section { display: none; padding: 0 20px 32px; }
+  .section.active { display: block; }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .service-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .service-row:hover {
+    border-color: var(--gold);
+    transform: translateX(3px);
+  }
+
+  .service-left { flex: 1; }
+
+  .service-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .service-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    font-weight: 400;
+    white-space: nowrap;
+    margin-left: 12px;
+  }
+
+  .book-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 7px;
+    padding: 7px 16px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    transition: all 0.15s;
+    margin-left: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .book-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+  }
+
+  /* two-col grid for paired services */
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .service-grid .service-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 0;
+  }
+
+  .service-grid .service-row .book-btn { align-self: flex-end; margin-left: 0; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    width: 100%;
+    max-width: 520px;
+    border-radius: 24px 24px 0 0;
+    border-top: 1px solid var(--border);
+    padding: 28px 24px 48px;
+    animation: slideUp 0.38s cubic-bezier(0.34,1.1,0.64,1) both;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 24px;
+  }
+
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 4px;
+  }
+
+  .modal-service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--white);
+    flex: 1;
+  }
+
+  .modal-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 20px;
+    cursor: pointer; padding: 0 0 0 12px;
+  }
+
+  .modal-price-label {
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+    font-weight: 500;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    color: var(--white);
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--gold); }
+
+  .form-group select option { background: #1e1a18; }
+
+  .confirm-btn {
+    width: 100%;
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s;
+  }
+
+  .confirm-btn:hover { background: var(--gold-light); }
+
+  /* Success */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 16px 0;
+  }
+
+  .success-icon { font-size: 44px; display: block; margin-bottom: 16px; }
+
+  .success-msg h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+  }
+
+  .success-msg p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 16px 24px 40px;
+    border-top: 1px solid var(--border);
+    margin: 0 20px;
+  }
+
+  footer p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="logo-ring"><span class="logo-initials">FS</span></div>
+    <div class="salon-name">FABLE</div>
+    <div class="salon-sub">Beauty Salon</div>
+    <div class="divider"><span>Price List & Booking</span></div>
+    <div class="phone-bar">Book by phone: <a href="tel:4163567129">(416) 356-7129</a></div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('mens', this)">Men's</button>
+    <button class="tab" onclick="showTab('womens', this)">Women's</button>
+    <button class="tab" onclick="showTab('color', this)">Color</button>
+  </div>
+
+  <!-- MEN'S -->
+  <div class="section active" id="tab-mens">
+    <div class="section-heading">Men's Services</div>
+
+    <div class="service-row" onclick="openModal('Hair Cut', 'from $15')">
+      <div class="service-left"><div class="service-name">Hair Cut</div></div>
+      <div class="service-price">$15+</div>
+      <button class="book-btn">Book</button>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-row" onclick="openModal('Skin / Taper Fade', 'from $20')">
+        <div class="service-name">Skin / Taper Fade</div>
+        <div class="service-price">$20+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Hair Cut & Wash', 'from $22')">
+        <div class="service-name">Hair Cut & Wash</div>
+        <div class="service-price">$22+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Beard Trim', 'from $10')">
+        <div class="service-name">Beard Trim</div>
+        <div class="service-price">$10+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Hair Cut & Color', 'from $45')">
+        <div class="service-name">Hair Cut & Color</div>
+        <div class="service-price">$45+</div>
+        <button class="book-btn">Book</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WOMEN'S -->
+  <div class="section" id="tab-womens">
+    <div class="section-heading">Women's Services</div>
+
+    <div class="service-row" onclick="openModal('Hair Cut', 'from $20')">
+      <div class="service-left"><div class="service-name">Hair Cut</div></div>
+      <div class="service-price">$20+</div>
+      <button class="book-btn">Book</button>
+    </div>
+    <div class="service-row" onclick="openModal('Hair Cut, Wash & Blow Dry', 'from $40')">
+      <div class="service-left"><div class="service-name">Hair Cut, Wash & Blow Dry</div></div>
+      <div class="service-price">$40+</div>
+      <button class="book-btn">Book</button>
+    </div>
+    <div class="service-row" onclick="openModal('Wash & Blow Dry', 'from $25')">
+      <div class="service-left"><div class="service-name">Wash & Blow Dry</div></div>
+      <div class="service-price">$25+</div>
+      <button class="book-btn">Book</button>
+    </div>
+    <div class="service-row" onclick="openModal('Flat Iron / Curl', 'from $25')">
+      <div class="service-left"><div class="service-name">Flat Iron / Curl</div></div>
+      <div class="service-price">$25+</div>
+      <button class="book-btn">Book</button>
+    </div>
+  </div>
+
+  <!-- COLOR & TREATMENT -->
+  <div class="section" id="tab-color">
+    <div class="section-heading">Color & Treatment</div>
+
+    <div class="service-grid">
+      <div class="service-row" onclick="openModal('Color', 'from $60')">
+        <div class="service-name">Color</div>
+        <div class="service-price">$60+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Root Touch Up', 'from $50')">
+        <div class="service-name">Root Touch Up</div>
+        <div class="service-price">$50+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Highlights', 'from $78')">
+        <div class="service-name">Highlights</div>
+        <div class="service-price">$78+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Oil Treatment', 'from $30')">
+        <div class="service-name">Oil Treatment</div>
+        <div class="service-price">$30+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Perm', 'from $88')">
+        <div class="service-name">Perm</div>
+        <div class="service-price">$88+</div>
+        <button class="book-btn">Book</button>
+      </div>
+      <div class="service-row" onclick="openModal('Keratin', 'from $135')">
+        <div class="service-name">Keratin</div>
+        <div class="service-price">$135+</div>
+        <button class="book-btn">Book</button>
+      </div>
+    </div>
+
+    <div class="service-row" onclick="openModal('Japanese Straightening', 'from $125')">
+      <div class="service-left"><div class="service-name">Japanese Straightening</div></div>
+      <div class="service-price">$125+</div>
+      <button class="book-btn">Book</button>
+    </div>
+    <div class="service-row" onclick="openModal('Head Spa Massage (30 min)', 'from $30')">
+      <div class="service-left"><div class="service-name">Head Spa Massage (30 min)</div></div>
+      <div class="service-price">$30+</div>
+      <button class="book-btn">Book</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>All prices are starting rates — final cost may vary.<br>Call us: (416) 356-7129</p>
+  </footer>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+
+    <div id="formContent">
+      <div class="modal-header">
+        <div class="modal-service-name" id="modalTitle">Service</div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-price-label" id="modalPrice">from $00</div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="inputName" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="inputPhone" placeholder="(416) 000-0000">
+      </div>
+      <div class="form-group">
+        <label>Preferred Date</label>
+        <input type="date" id="inputDate">
+      </div>
+      <div class="form-group">
+        <label>Preferred Time</label>
+        <select id="inputTime">
+          <option value="">Choose a time…</option>
+          <option>9:00 AM</option><option>9:30 AM</option>
+          <option>10:00 AM</option><option>10:30 AM</option>
+          <option>11:00 AM</option><option>11:30 AM</option>
+          <option>12:00 PM</option><option>12:30 PM</option>
+          <option>1:00 PM</option><option>1:30 PM</option>
+          <option>2:00 PM</option><option>2:30 PM</option>
+          <option>3:00 PM</option><option>3:30 PM</option>
+          <option>4:00 PM</option><option>4:30 PM</option>
+          <option>5:00 PM</option><option>5:30 PM</option>
+          <option>6:00 PM</option>
+        </select>
+      </div>
+
+      <button class="confirm-btn" onclick="confirmBooking()">Confirm Booking</button>
+    </div>
+
+    <div class="success-msg" id="successMsg">
+      <span class="success-icon">✦</span>
+      <h3>You're Booked</h3>
+      <p id="successDetail">We look forward to seeing you.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentService = '';
+
+  function showTab(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function openModal(name, price) {
+    currentService = name;
+    document.getElementById('modalTitle').textContent = name;
+    document.getElementById('modalPrice').textContent = price;
+    document.getElementById('formContent').style.display = 'block';
+    document.getElementById('successMsg').style.display = 'none';
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('inputDate').min = today;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function closeModalBg(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function confirmBooking() {
+    const name = document.getElementById('inputName').value.trim();
+    const phone = document.getElementById('inputPhone').value.trim();
+    const date = document.getElementById('inputDate').value;
+    const time = document.getElementById('inputTime').value;
+    if (!name || !phone || !date || !time) { alert('Please fill in all fields.'); return; }
+    const dateStr = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    document.getElementById('formContent').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    document.getElementById('successDetail').innerHTML =
+      `<strong>${name}</strong><br>${currentService}<br>${dateStr} at ${time}<br><br>We'll confirm via phone: ${phone}`;
+  }
+</script>
+</body>
+</html>
